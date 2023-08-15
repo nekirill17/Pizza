@@ -1,23 +1,22 @@
 import React, { useState } from "react"
 
-const Categories = () => {
-  const [activeIndex, setActiveIndex] = useState(0)
+const Categories = ({value, onClickCatrgory}) => {
+
+
   const arrOfPizza = ["Все", "Мясные", "Вегетрианские", "Гриль", "Острые", "Закрытые"]
-  const handleClick = (index) => {
-    setActiveIndex(index)
-  }
+
 
   return (
     <div className='categories'>
       <ul>
-        {arrOfPizza.map((value, i) => {
+        {arrOfPizza.map((categoryName, i) => {
           return (
             <li
               key={i}
-              onClick={() => handleClick(i)}
-              className={activeIndex === i ? "active" : ""}
+              onClick={() => onClickCatrgory(i)}
+              className={value === i ? "active" : ""}
             >
-              {value}
+              {categoryName}
             </li>
           )
         })}

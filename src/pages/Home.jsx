@@ -6,24 +6,44 @@ import PizzaBlock from "../components/PizzaBlock/PizzaBlock"
 
 const Home = () => {
 
-    useEffect(() => {
-        fetch("https://64d2440bf8d60b174361c22f.mockapi.io/items")
-          .then((res) => {
-            return res.json()
-          })
-          .then((arr) => {
-            setPizzas(arr)
-            setIsLoading(false)
-          })
-          window.scrollTo(0,0);
-      }, [])
-
     const [pizzas, setPizzas] = useState([])
     const [isLoading, setIsLoading] = useState(true)
+    const [categoryId, setCategoryID] = useState(0)
+    const [sortType, setSortType] = useState(0)
+
+    useEffect(() => {
+        setIsLoading(true)
+        if (categoryId ===0) { 
+            fetch(
+                "https://64d2440bf8d60b174361c22f.mockapi.io/items")
+              .then((res) => {
+                return res.json()
+              })
+              .then((arr) => {
+                setPizzas(arr)
+                setIsLoading(false)
+              })
+              window.scrollTo(0,0);
+        } else {
+            fetch(
+                "https://64d2440bf8d60b174361c22f.mockapi.io/items?category=" + categoryId)
+              .then((res) => {
+                return res.json()
+              })
+              .then((arr) => {
+                setPizzas(arr)
+                setIsLoading(false)
+              })
+              window.scrollTo(0,0);
+        }
+        
+      }, [categoryId])
+
+    
   return (
     <div className='container'>
       <div className='content__top'>
-        <Categories />
+        <Categories value = {categoryId} onClickCatrgory={(id) => setCategoryID(id)} />
         <Sort />
       </div>
       <h2 className='content__title'>Все пиццы</h2>
