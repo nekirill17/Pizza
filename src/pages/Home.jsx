@@ -6,18 +6,18 @@ import PizzaBlock from "../components/PizzaBlock/PizzaBlock"
 import PaginationComponent from "../components/PaginationComponent/PaginationComponent"
 import { SearchContext } from "../App"
 import { useSelector, useDispatch } from "react-redux"
-import { setCategoryId } from "../redux/slices/filterSlice"
+import { setCategoryId, setCurrentPage } from "../redux/slices/filterSlice"
+import axios from 'axios'
+
 
 const Home = () => {
   const categoryId = useSelector((state) => state.filterSlice.categoryId)
   const sortType = useSelector((state) => state.filterSlice.sortType.sortProperty)
+  const currentPage = useSelector((state) => state.filterSlice.currentPage)
   const dispatch = useDispatch();
 
   const [pizzas, setPizzas] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const [currentPage, setCurrentPage] = useState(1)
-
-
   const onChangeCtaegory = (id) => {
     dispatch(setCategoryId(id));
   }
@@ -30,21 +30,21 @@ const Home = () => {
     const category = categoryId > 0 ? `category=${categoryId}` : ""
     const search = searchValue ? `&search=${searchValue}` : ""
 
-    fetch(
-      `https://64d2440bf8d60b174361c22f.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`
+    axios
+        .get(`https://64d2440bf8d60b174361c22f.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`
     )
-      .then((res) => {
-        return res.json()
-      })
-      .then((arr) => {
-        setPizzas(arr)
-        setIsLoading(false)
-      })
+    .then((res) => {
+        setPizzas(res.data);
+        setIsLoading(false);
+    })
     window.scrollTo(0, 0)
   }, [categoryId, sortType, searchValue, currentPage])
 
   const items = pizzas.map((el) => <PizzaBlock key={el.id} {...el} />)
   const skeletons = [...Array(6)].map((el, i) => <Skeleton key={i} />)
+  const onChangePage = (number) => 
+    dispatch(setCurrentPage(number))
+  
 
   return (
     <div className='container'>
@@ -54,7 +54,7 @@ const Home = () => {
       </div>
       <h2 className='content__title'>Все пиццы</h2>
       <div className='content__items'>{isLoading ? skeletons : items}</div>
-      <PaginationComponent currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      <PaginationComponent currentPage = {currentPage} onChangePage={onChangePage} />
     </div>
   )
 }

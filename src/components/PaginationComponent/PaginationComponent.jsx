@@ -3,7 +3,8 @@ import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import styles from './PaginationComponent.module.scss'
 
-const PaginationComponent = ({currentPage,setCurrentPage}) => {
+
+const PaginationComponent = ({currentPage, onChangePage}) => {
     
   return (
     <div>
@@ -11,7 +12,7 @@ const PaginationComponent = ({currentPage,setCurrentPage}) => {
         <Pagination  
         count={3} 
         page={currentPage}
-        onChange={(_, num) => setCurrentPage(num)}
+        onChange={(_, num) => onChangePage(num)}
         />
       </Stack>
     </div>
